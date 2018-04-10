@@ -64,7 +64,6 @@ class Easy21:
 
 if __name__ == '__main__':
 
-   print ('arg = ', sys.argv)
    EPISODE = 20 if len(sys.argv) <= 1 else int(sys.argv[1])
 
    easy21 = Easy21()
@@ -101,4 +100,4 @@ if __name__ == '__main__':
 
       episodes.append(per_episode)
 
-pickle.dump(episodes, open('episodes_%d_%d.pickle' %(EPISODE, round(time.time())), 'wb'))
+   pickle.dump(episodes, open('episodes_%d_%d.pickle' %(EPISODE, round(time.time())), 'wb'))
