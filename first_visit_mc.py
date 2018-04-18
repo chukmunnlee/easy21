@@ -1,19 +1,17 @@
 import sys
 import pickle as pickle
-from env import Easy21
 
 import numpy as np
 from scipy.interpolate import griddata
 from mpl_toolkits.mplot3d import axes3d
 import matplotlib.pyplot as plt
 
-easy21 = Easy21()
-
 episodes = pickle.load(open(sys.argv[1], 'rb'))
 
 # ((dealer, player), reward)
-print('Episodes: %d' %len(episodes))
 EPISODE = len(episodes)
+print('Episodes: %d' %EPISODES)
+print('\tfile: %s' %sys.argv[1])
 
 reward = lambda s: s[1]
 value = lambda s, val: val[s] if s in val else 0
@@ -64,6 +62,6 @@ X, Y = np.meshgrid(xi, yi)
 #https://stackoverflow.com/questions/18923502/plotting-contour-and-wireframe-plots-with-matplotlib
 ax.plot_wireframe(X, Y, zi, rstride=1, cstride=1)
 
-plt.title('Easy21 for %d episodes' %EPISODE)
+plt.title('Easy21 using MC for %d episodes' %EPISODE)
 
 plt.show()
