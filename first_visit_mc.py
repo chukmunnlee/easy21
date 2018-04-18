@@ -9,8 +9,6 @@ import matplotlib.pyplot as plt
 
 easy21 = Easy21()
 
-EPISODE = 10000
-
 episodes = pickle.load(open(sys.argv[1], 'rb'))
 
 # ((dealer, player), reward)
@@ -38,24 +36,23 @@ for i, ep in enumerate(episodes[:EPISODE]):
 
 # ((dealer, player), reward)
 value_pi = [ (r[0], r[1]/cnt[r[0]]) for r in val.items() ]
-
-x = [ r[0][0] for r in value_pi ]
-y = [ r[0][1] for r in value_pi]
+x = [ r[0][0] for r in value_pi ] #dealer 0 - 10
+y = [ r[0][1] for r in value_pi ] #player 0 - 21
 z = [ r[1] for r in value_pi ]
 
 xi = np.linspace(0, 10, 20)
 yi = np.linspace(0, 21, 42)
 zi = griddata((x, y), z, (xi[None, :], yi[:, None]), method='cubic')
 
-#print('value_pi = ', value_pi)
-#print('\tx = ', x, len(x))
-#print('\ty = ', y, len(y))
-#print('\tz = ', z, len(z))
-#print('\txi = ', xi, len(xi))
-#print('\tyi = ', yi, len(yi))
-#print('\tzi = ', zi, len(zi))
+xi = np.linspace(0, 10, 20)
+yi = np.linspace(0, 21, 42)
+
+zi = griddata((x, y), z, (xi[None, :], yi[:, None]), method='cubic')
+
+X, Y = np.meshgrid(xi, yi)
 
 fig = plt.figure()
+
 ax = fig.add_subplot(111, projection='3d')
 
 ax.set_xlabel('X = dealer')
@@ -65,7 +62,7 @@ ax.set_zlabel('Z = REWARD')
 X, Y = np.meshgrid(xi, yi)
 
 #https://stackoverflow.com/questions/18923502/plotting-contour-and-wireframe-plots-with-matplotlib
-ax.plot_wireframe(X, Y, zi, rstride = 1, cstride = 1)
+ax.plot_wireframe(X, Y, zi, rstride=1, cstride=1)
 
 plt.title('Easy21 for %d episodes' %EPISODE)
 
