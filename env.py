@@ -42,25 +42,25 @@ class Easy21:
          return (new_state, reward, bust)
 
       #STICK
-      if self.is_bust(dealer):
+      while True:
+
+         card = self.is_red() * self.draw()
+         dealer = dealer + card
+
+         if self.is_bust(dealer): 
             return (state, 1, True)
 
-      card = self.is_red() * self.draw()
-      dealer = dealer + card
-      if self.is_bust(dealer): 
-         return ((dealer, player), 1, True)
+         if (dealer < DEALER_SKIP_VALUE):
+            continue
 
-      if (dealer < DEALER_SKIP_VALUE):
-         return ((dealer, player), 0, False)
+         if (dealer == player):
+            return (state, 0, True)
 
-      if (dealer == player):
-         return ((dealer, player), 0, True)
+         if (dealer > player):
+            return (state, -1, True)
 
-      if (dealer > player):
-         return ((dealer, player), -1, True)
-
-      if (dealer < player):
-         return ((dealer, player), 1, True)
+         if (dealer < player):
+            return (state, 1, True)
 
 if __name__ == '__main__':
 
@@ -88,15 +88,9 @@ if __name__ == '__main__':
             break
 
       if not bust:
-         while True:
-            new_state, reward, bust = easy21.step(state, easy21.STICK)
+         state, reward, bust = easy21.step(state, easy21.STICK)
+         per_episode.append((state, reward))
 
-            state = new_state
-
-            per_episode.append((state, reward))
-
-            if bust:
-               break
 
       episodes.append(per_episode)
 
