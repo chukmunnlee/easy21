@@ -10,7 +10,7 @@ episodes = pickle.load(open(sys.argv[1], 'rb'))
 
 # ((dealer, player), reward)
 EPISODE = len(episodes)
-print('Episodes: %d' %EPISODES)
+print('Episodes: %d' %EPISODE)
 print('\tfile: %s' %sys.argv[1])
 
 reward = lambda s: s[1]

@@ -15,7 +15,7 @@ class Easy21:
       np.random.seed(round(time.time()))
 
    def draw(self):
-      val = round(np.random.uniform(1, 11, None))
+      val = round(np.random.uniform(1, 10, None))
       return val if val > 0 else 1
 
    def is_red(self):
