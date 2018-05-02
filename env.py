@@ -3,6 +3,7 @@ import sys
 import numpy as np
 import pickle as pickle
 
+PLAYER_MIN_VALUE = 0
 PLAYER_SKIP_VALUE = 18
 DEALER_SKIP_VALUE = 17
 
@@ -43,6 +44,9 @@ class Easy21:
 
       #STICK
       while True:
+
+         if (player < PLAYER_MIN_VALUE):
+            return (state, -1, True)
 
          card = self.is_red() * self.draw()
          dealer = dealer + card
@@ -94,4 +98,4 @@ if __name__ == '__main__':
 
       episodes.append(per_episode)
 
-   pickle.dump(episodes, open('episodes_%d_%d.pickle' %(EPISODE, round(time.time())), 'wb'))
+   pickle.dump(episodes, open('episodes/episodes_%d_%d.pickle' %(EPISODE, round(time.time())), 'wb'))
