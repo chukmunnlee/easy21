@@ -11,16 +11,11 @@ import matplotlib.pyplot as plt
 
 from env import Easy21
 
-action = lambda state, q_value: q_value[state] if state in q_value else (0, 0)
+#action = lambda state, q_value: q_value[state] if state in q_value else (0, 0)
+get_state_action = lambda state, q_value: q_value[state] if state in q_value else [0, 0]
 
 # e = (dealer, player), action, reward, new_state
 gain = lambda episode: sum([v[2] for v in episode])
-
-def make_action(a):
-   return lambda state, q_value: q_value[state][a] if state in q_value else 0
-
-hit = make_action(Easy21.HIT)
-stick = make_action(Easy21.STICK)
 
 def count(state, count_list):
    if state not in count_list:
@@ -37,7 +32,7 @@ def policy(state, q_value):
    if state not in q_value:
       return Easy21.HIT
 
-   a = action(state, q_value)
+   a = get_state_action(state, q_value)
    #epislon decreases over time from more stochastic to more deterministic
    #correspond to more greedy
    if np.random.uniform(0, 1, None) <= epsilon(state, state_count):
@@ -70,7 +65,7 @@ np.random.seed(round(time.time()))
 
 #tunables
 EPISODE = 100 if len(sys.argv) <= 1 else int(sys.argv[1])
-N0 = 100
+N0 = 100 * 2
 
 state_count = {}
 state_action_count = {}

@@ -92,8 +92,8 @@ if __name__ == '__main__':
             break
 
       if not bust:
-         state, reward, bust = easy21.step(state, easy21.STICK)
-         per_episode.append((state, reward))
+         new_state, reward, bust = easy21.step(state, easy21.STICK)
+         per_episode.append((new_state, reward))
 
 
       episodes.append(per_episode)
