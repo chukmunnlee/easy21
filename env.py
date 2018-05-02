@@ -51,20 +51,22 @@ class Easy21:
          card = self.is_red() * self.draw()
          dealer = dealer + card
 
+         new_state = (dealer, player)
+
          if self.is_bust(dealer): 
-            return (state, 1, True)
+            return (new_state, 1, True)
 
          if (dealer < DEALER_SKIP_VALUE):
             continue
 
          if (dealer == player):
-            return (state, 0, True)
+            return (new_state, 0, True)
 
          if (dealer > player):
-            return (state, -1, True)
+            return (new_state, -1, True)
 
          if (dealer < player):
-            return (state, 1, True)
+            return (new_state, 1, True)
 
 if __name__ == '__main__':
 

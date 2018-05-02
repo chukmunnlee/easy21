@@ -23,7 +23,7 @@ def count(state, count_list):
    count_list[state] = count_list[state] + 1
 
 def epsilon(st, st_count):
-   st_n = state_count[st] if st in state_count else 1
+   st_n = state_count[st] if st in state_count else 0
    return N0 / (N0 + st_n)
 
 #epsilon greedy policy with decay
@@ -35,7 +35,7 @@ def policy(state, q_value):
    a = get_state_action(state, q_value)
    #epislon decreases over time from more stochastic to more deterministic
    #correspond to more greedy
-   if np.random.uniform(0, 1, None) <= epsilon(state, state_count):
+   if np.random.uniform(0, 1, None) > epsilon(state, state_count):
       return a.index(max(a))
 
    #uniformly select any action from the the action space
@@ -85,7 +85,7 @@ for i in tqdm(range(EPISODE)):
    #print('episode = ', episode)
 
    #for first visit
-   visited = {}
+   visited = set()
 
    if w:
       win += 1
@@ -94,8 +94,14 @@ for i in tqdm(range(EPISODE)):
 
    # e = (dealer, player), action, reward, new_state
    for idx, (from_st, a, rwd, new_st)  in enumerate(episode):
+
+      if from_st in visited:
+         continue
+
       count(from_st, state_count)
       count((from_st, a), state_action_count)
+
+      visited.add(from_st)
 
       pair_state_action = get_state_action(from_st, q_value)
       g = gain(episode[idx:])
