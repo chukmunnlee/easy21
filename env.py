@@ -3,6 +3,7 @@ import sys
 import numpy as np
 import pickle as pickle
 
+#PLAYER_MIN_VALUE = 15
 PLAYER_MIN_VALUE = 0
 PLAYER_SKIP_VALUE = 18
 DEALER_SKIP_VALUE = 17

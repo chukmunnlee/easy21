@@ -95,13 +95,13 @@ for i in tqdm(range(EPISODE)):
    # e = (dealer, player), action, reward, new_state
    for idx, (from_st, a, rwd, new_st)  in enumerate(episode):
 
-      if from_st in visited:
-         continue
+      #if from_st in visited:
+      #   continue
 
       count(from_st, state_count)
       count((from_st, a), state_action_count)
 
-      visited.add(from_st)
+      #visited.add(from_st)
 
       pair_state_action = get_state_action(from_st, q_value)
       g = gain(episode[idx:])
@@ -125,6 +125,7 @@ player = [] # 0 - 21 Y
 hit_qval = [] # -1 - 1 Z
 stick_qval = [] # -1 - 1 Z
 arg_max = [] # -1 - 1 Z
+decision = []
 # { (dealer, player_sum): (HIT, STICK), ... }
 for st in q_value:
    a = q_value[st]
@@ -133,6 +134,7 @@ for st in q_value:
    hit_qval.append(a[Easy21.HIT])
    stick_qval.append(a[Easy21.STICK])
    arg_max.append(max(a))
+   decision.append(np.argmax(a))
 
 print('state count = ', len(state_count))
 print('state action count = ', len(state_action_count))
@@ -176,5 +178,13 @@ az.set_zlabel('Z = argmax Q(s, a)')
 az.set_title('V*(s): episode: %d' %EPISODE)
 
 az.plot_wireframe(X, Y, zi_argmax, rstride=1, cstride=1, color='green')
+
+aa = fig.add_subplot(224, projection='3d')
+aa.set_xlabel('X = dealer')
+aa.set_ylabel('Y = player')
+aa.set_zlabel('Z = hit: 0, stick: 1')
+aa.set_title('Decision: episode: %d' %EPISODE)
+
+aa.scatter(dealer, player, decision)
 
 plt.show()
