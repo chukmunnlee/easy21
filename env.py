@@ -13,7 +13,8 @@ class Easy21:
    HIT = 0
    STICK = 1
 
-   def __init__(self):
+   def __init__(self, mpv = 0):
+      PLAYER_MIN_VALUE = mpv
       np.random.seed(round(time.time()))
 
    def draw(self):
