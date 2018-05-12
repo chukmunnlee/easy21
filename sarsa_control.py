@@ -1,8 +1,9 @@
 import sys
 import time
 from tqdm import tqdm
-
+import pickle as pickle
 import numpy as np
+import matplotlib.pyplot as plt
 
 from env import Easy21
 
@@ -92,27 +93,46 @@ class QValue:
       self.action_values(st)
       self.q[st] = act
 
+   def exportQValues(self):
+      opt_qvals = {}
+      for st in self.q:
+         opt_qvals[st] = np.array(self.q[st])
+      return opt_qvals
+
    def dump(self):
-      print('q_values = ', len(self.q.keys()))
+      print('q_value = ', len(self.q.keys()))
 
 if __name__ == '__main__':
 
+   pfile = './episodes/mc_qstar_10m.pickle' if len(sys.argv) <= 1 else sys.argv[1]
+
+   mc_qval = pickle.load(open(pfile, 'rb'))
+
+   qval_optimal = {}
+
+   for st in mc_qval:
+      qval_optimal[st] = np.array(mc_qval[st])
+
    N0 = 100
-   EPISODES = 100 if len(sys.argv) <= 1 else int(sys.argv[1])
+   EPISODES = 1000
    hyp_gamma = 1
-   #hyp_lambda = 0.1
    easy21 = Easy21()
 
-   for hyp_lambda in np.arange(0, 1.1, 0.1):
+   mse = []
 
-      print('Lambda: %.1f', hyp_lambda)
+   ep_count = np.arange(1, 1001, dtype=np.int8)
+
+   for hyp_lambda in np.arange(0, 1.1, 0.1):
 
       stats = Stats()
       q_value = QValue()
       policy = Policy(q_value, stats, N0)
       eligibility = Eligibility()
 
-      for i in tqdm(range(EPISODES)):
+      mse_per_ep = []
+
+      for i in tqdm(range(EPISODES), desc='lambda = %.1f' %hyp_lambda):
+
          terminate = False
 
          #(dealer, player)
@@ -145,4 +165,20 @@ if __name__ == '__main__':
 
             st, act = next_st, next_act
 
-   q_value.dump()
+         mse_per_ep.append(\
+               np.sum([ np.square(qval_optimal[st] - np.array(q_value[st])) for st in qval_optimal ]) / (len(qval_optimal) * 2))
+
+      mse.append(mse_per_ep)
+
+   mse = np.array(mse)
+
+   lam = 0.1
+   for i in mse[1: -1]:
+      plt.plot(i, label='lambda=%.1f' %lam)
+      lam += lam
+
+   plt.xlabel('Episode')
+   plt.ylabel('MSE')
+
+   plt.show()
+
