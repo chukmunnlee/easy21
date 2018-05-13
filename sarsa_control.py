@@ -198,8 +198,8 @@ if __name__ == '__main__':
    print('shape: y_total_mse: %s, x_lam: %s' %(str(y_total_mse), str(x_lam)))
 
    p2.plot(x_lam, y_total_mse)
-   p2.set_xlabel('MSE')
-   p2.set_ylabel('lambda')
+   p2.set_xlabel('lambda')
+   p2.set_ylabel('MSE')
 
    p2.set_title('MSE per lambda')
 
