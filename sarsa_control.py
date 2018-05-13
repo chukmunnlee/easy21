@@ -104,7 +104,7 @@ class QValue:
 
 if __name__ == '__main__':
 
-   pfile = './episodes/mc_qstar_10m.pickle' if len(sys.argv) <= 1 else sys.argv[1]
+   pfile = './optimal/mc_qstar_10m.pickle' if len(sys.argv) <= 1 else sys.argv[1]
 
    mc_qval = pickle.load(open(pfile, 'rb'))
 
@@ -139,6 +139,7 @@ if __name__ == '__main__':
          episode = []
          st = (easy21.draw(), easy21.draw())
          act = policy.epsilon_greedy(st)
+
          while not terminate:
             next_st, r, terminate = easy21.step(st, act)
             next_act = policy.epsilon_greedy(next_st)
@@ -153,7 +154,7 @@ if __name__ == '__main__':
             alpha = 1 / stats.state_action_count(st, act)
             delta = r + (hyp_gamma * next_qval[next_act]) - qval[act]
             ad = alpha * delta
-            eligibility[st, act] += 1
+            eligibility[(st, act)] += 1
 
             for a_st, a_act in stats.state_action_pair():
                a_act_val = q_value[a_st]
@@ -172,13 +173,35 @@ if __name__ == '__main__':
 
    mse = np.array(mse)
 
+   fig = plt.figure()
+
+   #MSE for different lambdas per episode
+   p1 = fig.add_subplot(211)
+
    lam = 0.1
    for i in mse[1: -1]:
-      plt.plot(i, label='lambda=%.1f' %lam)
-      lam += lam
+      p1.plot(i, label='lambda=%.1f' %lam)
+      lam += 0.1
 
-   plt.xlabel('Episode')
-   plt.ylabel('MSE')
+   p1.set_xlabel('Episode')
+   p1.set_ylabel('MSE')
+   p1.legend(loc='upper right')
+
+   p1.set_title('MSE per episode')
+
+   #MSE against lambda
+   p2 = fig.add_subplot(212)
+
+   y_total_mse = [ np.sum(i) / len(i) for i in mse[1: -1] ]
+   x_lam = np.arange(0.1, 1, .1)
+
+   print('shape: y_total_mse: %s, x_lam: %s' %(str(y_total_mse), str(x_lam)))
+
+   p2.plot(x_lam, y_total_mse)
+   p2.set_xlabel('MSE')
+   p2.set_ylabel('lambda')
+
+   p2.set_title('MSE per lambda')
 
    plt.show()
 
